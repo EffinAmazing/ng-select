@@ -28,7 +28,7 @@
             box-sizing: border-box;
             cursor: pointer;
             display: block;
-            @include wrapt-text();
+            // @include wrapt-text();
 
             .highlighted {
                 font-weight: bold;

@@ -350,6 +350,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     }
 
     open() {
+        this.filterInput.nativeElement.focus();
         this.showMessage( `Dropdown: open`);
         if (this.isDisabled || this.isOpen || this.itemsList.maxItemsSelected) {
             return;
@@ -377,17 +378,16 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             if (!this.readOnly) {
                 this.selectTag(true);
             }
-            this._clearSearch();
         }
         if (this.multiple && this.filterValue) {
             if (!this.readOnly) {
                 this.selectTag(true);
             }
-            this._clearSearch();
         }
         if (!this.isOpen) {
             return;
         }
+        this._clearSearch();
         this.filterInput.nativeElement.blur();
         this.isOpen = false;
         this._onTouched();
