@@ -1,3 +1,11 @@
+# Steps to Build the application
+`npm run build
+ cd dist
+ npm publish --access public
+ npm login
+ npm publish --access public`
+# Contact to concerned person for credentials
+
 [![npm version](https://badge.fury.io/js/%40ng-select%2Fng-select.svg)](https://badge.fury.io/js/%40ng-select%2Fng-select)
 [![Build Status][travis-badge]][travis-badge-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
