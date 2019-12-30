@@ -512,7 +512,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
                 } else {
                     if (filterInput.selectionStart) {
                         filterInput.focus() ;
-                        filterInput.setSelectionRange(inputEvent.target.selectionStart, inputEvent.target.selectionStart);
+                        filterInput.setSelectionRange(inputEvent.target.selectionStart+5, inputEvent.target.selectionStart+5);
                     } else {
                         filterInput.focus();
                     }
