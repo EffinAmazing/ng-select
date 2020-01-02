@@ -502,27 +502,16 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         return empty && this._isTypeahead && !this.filterValue && !this.loading;
     }
 
-    filter(term: string, filterInput, inputEvent) {
-        // preserve input caret position;
-            if (filterInput != null) {
-                if (filterInput.createTextRange) {
-                    const range = filterInput.createTextRange();
-                    range.move('character', inputEvent.target.selectionStart);
-                    range.select();
-                } else {
-                    if (filterInput.selectionStart) {
-                        filterInput.focus() ;
-                        filterInput.setSelectionRange(inputEvent.target.selectionStart+5, inputEvent.target.selectionStart+5);
-                    } else {
-                        filterInput.focus();
-                    }
-                }
-            }
-
-        this.showMessage( `Filter:`, term);
-        this.filterValue = term;
+    filter() {
+        
+        this.showMessage( `Filter:`, this.filterValue);
+        
+        if (!this.filterValue) {
+            this.clearModel();
+        }
+        
         this.open();
-
+        
         if (this._isTypeahead) {
             this.typeahead.next(this.filterValue);
         } else {

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NgSelectComponent, NG_SELECT_DEFAULT_CONFIG } from './ng-select.component';
 import {
     NgOptionTemplateDirective,
@@ -38,7 +39,8 @@ import { ConsoleService } from './console.service';
         NgTagTemplateDirective
     ],
     imports: [
-        CommonModule
+        CommonModule,
+        FormsModule
     ],
     exports: [
         NgSelectComponent,
