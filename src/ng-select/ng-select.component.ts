@@ -473,7 +473,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             this.close();
             return
         }
-        if (isClose) {
+        if (isClose && !this.readOnly) {
             this.select(this.itemsList.addItem(this.filterValue),false);
             return;
         }
@@ -484,8 +484,12 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         }
 
         if (isPromise(tag)) {
-            tag.then(item => this.select(this.itemsList.addItem(item)))
-                .catch(() => { });
+            tag.then(item => {
+                return this.select(this.itemsList.addItem(item))
+            }).catch((err) => { 
+                this.close();
+                console.error(err);
+             });
         } else if (tag) {
             this.select(this.itemsList.addItem(tag));
         }
@@ -801,11 +805,11 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
                     this.close();
                 }
                 this.toggleItem(this.itemsList.markedItem);
-            } else if (this.addTag && this.addItem) {
+            } else if (this.addTag && this.addItem ) {
                 this.selectTag();
                 this.enterEvent.emit();
             } else {
-                this.close();
+                this.selectTag(true);
             }
         } else {
             this.open();
