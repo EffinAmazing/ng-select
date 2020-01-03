@@ -80,7 +80,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Input() bindLabel: string;
     @Input() bindValue: string;
     @Input() clearable = true;
-    @Input() markFirst = true;
+    @Input() markFirst = false;
     @Input() placeholder: string;
     @Input() notFoundText: string;
     @Input() typeToSearchText: string;
@@ -127,6 +127,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Output('clear') clearEvent = new EventEmitter();
     @Output('add') addEvent = new EventEmitter();
     @Output('remove') removeEvent = new EventEmitter();
+    @Output('enterClick') enterEvent = new EventEmitter();
     @Output('scrollToEnd') scrollToEnd = new EventEmitter<{ start: number; end: number }>();
 
     // custom templates
@@ -155,6 +156,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     filterValue: string = null;
     dropdownId = newId();
     selectedItemId = 0;
+    addItem = true;
 
     private _defaultLabel = 'label';
     private _primitive: boolean;
@@ -342,6 +344,15 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         this._cd.markForCheck();
     }
 
+    selectAddTag(): void {
+        this.itemsList.unmarkItem();
+        this.addItem = true;
+    }
+
+    unSelectAddTag(): void {
+        this.addItem = false;
+    }
+
     toggle() {
         this.showMessage( `Event: toggle`);
         if (!this.isOpen) {
@@ -353,6 +364,8 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
 
     open() {
         this.filterInput.nativeElement.focus();
+        console.log("opened panel")
+        this.addItem = false;
         this.showMessage( `Dropdown: open`);
         if (this.isDisabled || this.isOpen || this.itemsList.maxItemsSelected) {
             return;
@@ -456,6 +469,10 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     selectTag(isClose?: boolean) {
         this.showMessage( `Event: selectTag`);
         let tag;
+        if(! this.filterValue) {
+            this.close();
+            return
+        }
         if (isClose) {
             this.select(this.itemsList.addItem(this.filterValue),false);
             return;
@@ -506,10 +523,10 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         
         this.showMessage( `Filter:`, this.filterValue);
         
-        if (!this.filterValue) {
+        if (!this.filterValue && !this.multiple) {
             this.clearModel();
         }
-        
+
         this.open();
         
         if (this._isTypeahead) {
@@ -538,7 +555,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     }
 
     onItemHover(item: NgOption) {
-        this.showMessage( `On input hover`);
+        this.showMessage(`On input hover`);
         if (item.disabled) {
             return;
         }
@@ -780,13 +797,18 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         this.showMessage( `Handle enter`);
         if (this.isOpen) {
             if (this.itemsList.markedItem) {
+                if (!this.itemsList.markedItem.label &&  !this.itemsList.markedItem.value['name']) {
+                    this.close();
+                }
                 this.toggleItem(this.itemsList.markedItem);
             } else if (this.addTag) {
                 this.selectTag();
+                this.enterEvent.emit();
             }
         } else {
             this.open();
         }
+        this.enterEvent.emit($event);
         $event.preventDefault();
         $event.stopPropagation();
     }
@@ -805,11 +827,15 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         if (this.nextItemIsTag(+1)) {
             this.itemsList.unmarkItem();
             this._scrollToTag();
+            this.open();
+            this.addItem = true;
         } else {
+            this.addItem = false;
             this.itemsList.markNextItem();
             this._scrollToMarked();
+            this.open();
         }
-        this.open();
+        console.log("markedIndex",this.itemsList.markedIndex);
         $event.preventDefault();
     }
 
@@ -820,9 +846,13 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         }
 
         if (this.nextItemIsTag(-1)) {
+            console.log("nextItemIsTag");
             this.itemsList.unmarkItem();
+            this.addItem = true;
             this._scrollToTag();
         } else {
+            console.log("nextItemIsTag2");
+            this.addItem = false;
             this.itemsList.markPreviousItem();
             this._scrollToMarked();
         }

@@ -64,6 +64,7 @@
     (update)="viewPortItems = $event"
     (scrollToEnd)="scrollToEnd.emit($event)"
     (outsideClick)="close()"
+    (mouseout)="itemsList.unmarkItem()"
     [class.ng-select-multiple]="multiple"
     [ngClass]="classes"
     [id]="dropdownId">
@@ -89,7 +90,7 @@
             </ng-template>
         </div>
 
-        <div class="ng-option" [class.ng-option-marked]="!itemsList.markedItem" (mouseover)="itemsList.unmarkItem()" role="option" (click)="selectTag()" *ngIf="showAddTag()">
+        <div class="ng-option" [class.ng-option-marked]="addItem" (mouseover)="selectAddTag()" (mouseout)="unSelectAddTag()" role="option" (click)="selectTag()" *ngIf="showAddTag()">
             <ng-template #defaultTagTemplate>
                 <span><span class="ng-tag-label">{{addTagText}}</span>"{{filterValue}}"</span>
             </ng-template>
