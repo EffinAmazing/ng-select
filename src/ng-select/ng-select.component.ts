@@ -810,6 +810,9 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             } else {
                 this.selectTag(true);
             }
+        } else if ( this.itemsList.maxItemsSelected ) {
+            this.enterEvent.emit();
+            this.filterInput.nativeElement.blur();
         } else {
             this.open();
         }
