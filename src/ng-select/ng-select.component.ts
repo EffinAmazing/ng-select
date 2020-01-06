@@ -127,7 +127,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Output('clear') clearEvent = new EventEmitter();
     @Output('add') addEvent = new EventEmitter();
     @Output('remove') removeEvent = new EventEmitter();
-    @Output('enterClick') enterEvent = new EventEmitter();
+    @Output('enter') enterEvent = new EventEmitter();
     @Output('scrollToEnd') scrollToEnd = new EventEmitter<{ start: number; end: number }>();
 
     // custom templates
@@ -423,7 +423,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         }
     }
 
-    select(item: NgOption) {
+    select(item: NgOption,isNew:boolean = false) {
             this.showMessage( `Item selected:`, item);
         if(!this.multiple) {
             // this.filterValue = item.label;
@@ -439,8 +439,8 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             }
             this._updateNgModel();
         }
-        if (!this.isOpen) {
-            return;
+        if (isNew) {
+            this.enterEvent.emit();
         }
         if (this.closeOnSelect || this.itemsList.noItemsToSelect) {
             this.close();
@@ -474,7 +474,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             return
         }
         if (isClose && !this.readOnly) {
-            this.select(this.itemsList.addItem(this.filterValue));
+            this.select(this.itemsList.addItem(this.filterValue),true);
             return;
         }
         if (isFunction(this.addTag)) {
@@ -807,14 +807,12 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
                 this.toggleItem(this.itemsList.markedItem);
             } else if (this.addTag && this.addItem ) {
                 this.selectTag();
-                this.enterEvent.emit();
             } else {
                 this.selectTag(true);
             }
         } else {
             this.open();
         }
-        this.enterEvent.emit($event);
         $event.preventDefault();
         $event.stopPropagation();
     }
