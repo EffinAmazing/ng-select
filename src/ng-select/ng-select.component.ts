@@ -442,6 +442,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         if (isNew) {
             this.enterEvent.emit();
         }
+        this.itemsList.unmarkItem();
         if (this.closeOnSelect || this.itemsList.noItemsToSelect) {
             this.close();
         }
