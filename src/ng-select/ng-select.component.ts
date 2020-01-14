@@ -472,6 +472,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         let tag;
         if(! this.filterValue) {
             this.close();
+            this.enterEvent.emit();
             return
         }
         if (isClose && !this.readOnly) {
