@@ -128,6 +128,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Output('add') addEvent = new EventEmitter();
     @Output('remove') removeEvent = new EventEmitter();
     @Output('enter') enterEvent = new EventEmitter();
+    @Output('closedOnEnter') closedOnEnterEvent = new EventEmitter();
     @Output('scrollToEnd') scrollToEnd = new EventEmitter<{ start: number; end: number }>();
 
     // custom templates
@@ -472,7 +473,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         let tag;
         if(! this.filterValue) {
             this.close();
-            this.enterEvent.emit();
+            this.closedOnEnterEvent.emit(true);
             return
         }
         if (isClose && !this.readOnly) {
