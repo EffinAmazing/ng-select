@@ -471,7 +471,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     selectTag(isClose?: boolean) {
         this.showMessage( `Event: selectTag`);
         let tag;
-        if(! this.filterValue) {
+        if(! this.filterValue || this.itemsList.items.some(x => x.label.toLowerCase() === this.filterValue.toLowerCase())) {
             this.close();
             this.closedOnEnterEvent.emit(true);
             return
