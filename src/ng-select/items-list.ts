@@ -98,9 +98,16 @@ export class ItemsList {
     }
 
     addItem(item: any) {
+        let duplicate = false;
+        if (this.getDuplicateItem(item)) {
+            item = this.getDuplicateItem(item).label;
+            duplicate = true;
+        }
         const option = this.mapItem(item, this._items.length);
-        this._items.push(option);
-        this._filteredItems.push(option);
+        if (!duplicate) {
+            this._items.push(option);
+            this._filteredItems.push(option);
+        }
         return option;
     }
 
@@ -113,6 +120,18 @@ export class ItemsList {
 
         if (this._ngSelect.hideSelected) {
             this.resetItems();
+        }
+    }
+
+    isDuplicateItem(item: string) {
+        return this.items.some(x => x.label.toLowerCase() === item.toLowerCase());
+    }
+
+    getDuplicateItem(item: string) {
+        if (this.isDuplicateItem(item)) {
+          return this.items.find(x => x.label.toLowerCase() === item.toLowerCase());
+        } else {
+            return undefined;
         }
     }
 
