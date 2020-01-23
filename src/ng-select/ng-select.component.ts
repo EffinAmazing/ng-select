@@ -79,8 +79,6 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Input() items: any[] = [];
     @Input() bindLabel: string;
     @Input() bindValue: string;
-    @Input() clearable = true;
-    @Input() markFirst = false;
     @Input() placeholder: string;
     @Input() notFoundText: string;
     @Input() typeToSearchText: string;
@@ -89,20 +87,23 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Input() clearAllText: string;
     @Input() dropdownPosition: DropdownPosition = 'auto';
     @Input() appendTo: string;
+    @Input() maxSelectedItems: number;
+    @Input() groupBy: string;
+    @Input() focusOnSelect = false;
+    @Input() clearable = true;
+    @Input() markFirst = false;
     @Input() loading = false;
     @Input() closeOnSelect = true;
     @Input() hideSelected = false;
     @Input() selectOnTab = false;
-    @Input() maxSelectedItems: number;
-    @Input() groupBy: string;
     @Input() bufferAmount = 4;
     @Input() virtualScroll = false;
     @Input() selectableGroup = false;
     @Input() searchFn = null;
     @Input() clearSearchOnAdd = true;
     @Input() labelForId = '';
-    @Input() env;
     @Input() readOnly = false;
+    @Input() env;
     @Input() @HostBinding('class.ng-select-typeahead') typeahead: Subject<string>;
     @Input() @HostBinding('class.ng-select-multiple') multiple = false;
     @Input() @HostBinding('class.ng-select-taggable') addTag: boolean | AddTagFn = false;
@@ -148,7 +149,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @ViewChild('filterInput') filterInput: ElementRef;
     @ViewChild('labelSpanRef')  labelSpanRef: ElementRef;
 
-    @HostBinding('class.ng-select-opened') isOpen = false;
+    @HostBinding('class.ng-select-opened') get isOpened() { return this.isOpen && this.showDropdownPanel }
     @HostBinding('class.ng-select-disabled') isDisabled = false;
     @HostBinding('class.ng-select-filtered') get filtered() { return !!this.filterValue && this.searchable };
 
@@ -157,6 +158,8 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     filterValue: string = null;
     dropdownId = newId();
     selectedItemId = 0;
+    showDropdownPanel = true;
+    isOpen = false;
     addItem = true;
 
     private _defaultLabel = 'label';
@@ -285,6 +288,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         }
 
         if (this.searchable) {
+            this.showDropdownPanel = true;
             this.open();
         } else {
             this.toggle();
@@ -424,7 +428,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         }
     }
 
-    select(item: NgOption,isNew:boolean = false) {
+    select(item: NgOption,newOptionValue:boolean = false) {
             this.showMessage( `Item selected:`, item);
         if(!this.multiple) {
             // this.filterValue = item.label;
@@ -440,12 +444,18 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             }
             this._updateNgModel();
         }
-        if (isNew) {
+        if (newOptionValue) {
             this.enterEvent.emit();
         }
         this.itemsList.unmarkItem();
         if (this.closeOnSelect || this.itemsList.noItemsToSelect) {
+            this.showDropdownPanel = false;
             this.close();
+
+            /// focus the current selected value
+            setTimeout(() => {
+                this.open();
+            });
         }
     }
 
@@ -533,7 +543,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         if (!this.filterValue && !this.multiple) {
             this.clearModel();
         }
-
+        this.showDropdownPanel = true;
         this.open();
         
         if (this._isTypeahead) {
@@ -545,7 +555,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     }
 
     onInputFocus() {
-        this.showMessage( `On input focus`);
+        this.showMessage( `On input focus` );
         (<HTMLElement>this.elementRef.nativeElement).classList.add('ng-select-focused');
         this.focusEvent.emit(null);
         this._focused = true;
@@ -759,7 +769,6 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         // if (!this.filterValue) {
         //     return;
         // }
-
         this.filterValue = null;
         this.itemsList.resetItems();
     }
