@@ -149,7 +149,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @ViewChild('filterInput') filterInput: ElementRef;
     @ViewChild('labelSpanRef')  labelSpanRef: ElementRef;
 
-    @HostBinding('class.ng-select-opened') get isOpened() { return this.isOpen && this.showDropdownPanel }
+    @HostBinding('class.ng-select-opened') get isOpened() { return this.isOpen }
     @HostBinding('class.ng-select-disabled') isDisabled = false;
     @HostBinding('class.ng-select-filtered') get filtered() { return !!this.filterValue && this.searchable };
 
@@ -453,9 +453,9 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             this.close();
 
             /// focus the current selected value
-            setTimeout(() => {
-                this.open();
-            });
+            // setTimeout(() => {
+            //     this.open();
+            // });
         }
     }
 
@@ -503,8 +503,10 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
                 this.close();
                 console.error(err);
              });
-        } else if (tag) {
+        } else if (tag && !this.readOnly) {
             this.select(this.itemsList.addItem(tag));
+        } else {
+            this.close();
         }
     }
 
@@ -559,7 +561,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         (<HTMLElement>this.elementRef.nativeElement).classList.add('ng-select-focused');
         this.focusEvent.emit(null);
         this._focused = true;
-        this.open();
+        // this.open();
     }
 
     onInputBlur() {
@@ -821,13 +823,14 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             } else if (this.addTag && this.addItem ) {
                 this.selectTag();
             } else {
-                this.enterEvent.emit();
+                // this.enterEvent.emit();
                 this.selectTag(true);
             }
         } else if ( this.itemsList.maxItemsSelected ) {
             this.enterEvent.emit();
             this.filterInput.nativeElement.blur();
         } else {
+            this.showDropdownPanel = true;
             this.open();
         }
         $event.preventDefault();
