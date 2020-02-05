@@ -103,6 +103,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @Input() clearSearchOnAdd = true;
     @Input() labelForId = '';
     @Input() readOnly = false;
+    @Input() disabled = false;
     @Input() env;
     @Input() @HostBinding('class.ng-select-typeahead') typeahead: Subject<string>;
     @Input() @HostBinding('class.ng-select-multiple') multiple = false;
@@ -150,7 +151,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     @ViewChild('labelSpanRef')  labelSpanRef: ElementRef;
 
     @HostBinding('class.ng-select-opened') get isOpened() { return this.isOpen }
-    @HostBinding('class.ng-select-disabled') isDisabled = false;
+    @HostBinding('class.ng-select-disabled') get isDisabled() { return this.disabled }
     @HostBinding('class.ng-select-filtered') get filtered() { return !!this.filterValue && this.searchable };
 
     itemsList = new ItemsList(this);
@@ -345,7 +346,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
 
     setDisabledState(isDisabled: boolean): void {
         this.showMessage( `setDisabledState:`, isDisabled);
-        this.isDisabled = isDisabled;
+        this.disabled = isDisabled;
         this._cd.markForCheck();
     }
 
@@ -371,7 +372,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         this.filterInput.nativeElement.focus();
         this.addItem = false;
         this.showMessage( `Dropdown: open`);
-        if (this.isDisabled || this.isOpen || this.itemsList.maxItemsSelected) {
+        if (this.disabled || this.isOpen || this.itemsList.maxItemsSelected) {
             return;
         }
 
@@ -417,7 +418,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
 
     toggleItem(item: NgOption) {
         this.showMessage( `Toggle item:`, item);
-        if (!item || item.disabled || this.isDisabled) {
+        if (!item || item.disabled || this.disabled) {
             return;
         }
 
@@ -512,7 +513,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
 
     showClear() {
         this.showMessage( `Event: showClear`);
-        return this.clearable && (this.hasValue || this.filterValue) && !this.isDisabled;
+        return this.clearable && (this.hasValue || this.filterValue) && !this.disabled;
     }
 
     showAddTag() {
@@ -568,7 +569,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
         this.showMessage( `On input blur`);
         (<HTMLElement>this.elementRef.nativeElement).classList.remove('ng-select-focused');
         this.blurEvent.emit(null);
-        if (!this.isOpen && !this.isDisabled) {
+        if (!this.isOpen && !this.disabled) {
             this._onTouched();
         }
         this._focused = false;
