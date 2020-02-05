@@ -123,8 +123,12 @@ export class ItemsList {
         }
     }
 
-    isDuplicateItem(item: string) {
-        return this.items.some(x => x.label.toLowerCase() === item.toLowerCase());
+    isDuplicateItem(item: any) {
+        if (typeof item === 'string') {
+            return this.items.some(x => x.label.toLowerCase() === item.toLowerCase());
+        } else {
+            return this.items.some(x => x.label.toLowerCase() === item.name.toLowerCase());
+        }
     }
 
     getDuplicateItem(item: string) {
