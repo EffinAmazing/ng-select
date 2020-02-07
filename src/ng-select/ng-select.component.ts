@@ -446,7 +446,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             this._updateNgModel();
         }
         if (newOptionValue) {
-            this.enterEvent.emit();
+            // this.enterEvent.emit();
         }
         this.itemsList.unmarkItem();
         if (this.closeOnSelect || this.itemsList.noItemsToSelect) {
@@ -818,20 +818,22 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
     }
 
     private _handleEnter($event: KeyboardEvent) {
-        this.showMessage( `Handle enter`);
+        this.showMessage(`Handle enter`);
         if (this.isOpen) {
             if (this.itemsList.markedItem) {
-                if (!this.itemsList.markedItem.label &&  !this.itemsList.markedItem.value['name']) {
+                if (!this.itemsList.markedItem.label && !this.itemsList.markedItem.value['name']) {
                     this.close();
                 }
+                this.enterEvent.emit();
                 this.toggleItem(this.itemsList.markedItem);
-            } else if (this.addTag && this.addItem ) {
+            } else if (this.addTag && this.addItem) {
+                this.enterEvent.emit();
                 this.selectTag();
             } else {
-                // this.enterEvent.emit();
+                this.enterEvent.emit();
                 this.selectTag(true);
             }
-        } else if ( this.itemsList.maxItemsSelected ) {
+        } else if (this.itemsList.maxItemsSelected) {
             this.enterEvent.emit();
             this.filterInput.nativeElement.blur();
         } else {
