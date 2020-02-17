@@ -488,7 +488,7 @@ export class NgSelectComponent implements OnDestroy, OnChanges, AfterViewInit, C
             return
         }
         if (this.itemsList.isDuplicateItem(this.filterValue)) {
-            this.select(this.itemsList.addItem(this.filterValue), true);
+            this.select(this.itemsList.getDuplicateItem(this.filterValue));
             return;
         }
         if (isClose && !this.readOnly) {

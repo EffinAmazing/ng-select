@@ -100,7 +100,7 @@ export class ItemsList {
     addItem(item: any) {
         let duplicate = false;
         if (this.getDuplicateItem(item)) {
-            item = this.getDuplicateItem(item).label;
+            item = this.getDuplicateItem(item);
             duplicate = true;
         }
         const option = this.mapItem(item, this._items.length);
