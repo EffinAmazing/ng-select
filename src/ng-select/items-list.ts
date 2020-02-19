@@ -97,7 +97,7 @@ export class ItemsList {
         }
     }
 
-    addItem(item: any) {
+    addItem(item: any, push = true) {
         let duplicate = false;
         if (this.getDuplicateItem(item)) {
             item = this.getDuplicateItem(item);
@@ -105,8 +105,9 @@ export class ItemsList {
         }
         const option = this.mapItem(item, this._items.length);
         if (!duplicate) {
-            this._items.push(option);
-            this._filteredItems.push(option);
+            if (push) {
+                this._items.push(option);
+            }
         }
         return option;
     }
