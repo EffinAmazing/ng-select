@@ -540,6 +540,10 @@ export class NgSelectComponent
     }
 
     if (!this.readOnly) {
+        if(!(this.addTag && this.addItem)) {
+            this.select(this.itemsList.addItem(this.filterValue, false), true);
+            return
+        }
       if (isFunction(this.addTag)) {
         tag = (<AddTagFn>this.addTag)(this.filterValue);
       } else {
