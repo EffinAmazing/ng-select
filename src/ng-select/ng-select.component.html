@@ -63,7 +63,7 @@
     [items]="itemsList.filteredItems"
     (update)="viewPortItems = $event"
     (scrollToEnd)="scrollToEnd.emit($event)"
-    (outsideClick)="close()"
+    (outsideClick)="close(true)"
     (mouseout)="itemsList.unmarkItem()"
     [class.ng-select-multiple]="multiple"
     [ngClass]="classes"
