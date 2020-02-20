@@ -104,7 +104,7 @@ export class NgSelectComponent
   @Input() clearable = true;
   @Input() markFirst = false;
   @Input() loading = false;
-  @Input() closeOnSelect = true;
+  @Input() closeOnSelect = false;
   @Input() hideSelected = false;
   @Input() selectOnTab = false;
   @Input() bufferAmount = 4;
@@ -441,7 +441,7 @@ export class NgSelectComponent
       // if (this.multiple && this.filterValue) {
       //     this.selectTag(true);
       // }
-      this.selectTag(true);
+      this.selectTag(false, true);
     }
 
     if (!this.isOpen) {
@@ -486,7 +486,7 @@ export class NgSelectComponent
       this._updateNgModel();
     }
     if (newOptionValue) {
-      // this.enterEvent.emit();
+      // this.emitEnterEvent();
     }
     this.itemsList.unmarkItem();
     if (this.closeOnSelect || this.itemsList.noItemsToSelect) {
@@ -519,11 +519,12 @@ export class NgSelectComponent
     this.removeEvent.emit(item);
   }
 
-  selectTag(isClose?: boolean) {
+  selectTag(fromEnter?: boolean, fromClose?: boolean) {
     this.showMessage(`Event: selectTag`);
     let tag;
     if (!this.filterValue || !this.showDropdownPanel) {
       this.close();
+      if(fromEnter) this.emitEnterEvent(true);
       this.closedOnEnterEvent.emit(true);
       return;
     }
@@ -533,12 +534,12 @@ export class NgSelectComponent
       return;
     }
 
-    if (!this.readOnly) {
-      if (isClose) {
+    if(fromClose) {
         this.select(this.itemsList.addItem(this.filterValue, false), true);
-        return;
-      }
+        return false;
+    }
 
+    if (!this.readOnly) {
       if (isFunction(this.addTag)) {
         tag = (<AddTagFn>this.addTag)(this.filterValue);
       } else {
@@ -550,7 +551,9 @@ export class NgSelectComponent
       if (isPromise(tag)) {
         tag
           .then(item => {
-            return this.select(this.itemsList.addItem(item));
+            this.select(this.itemsList.addItem(item));
+            if(fromEnter) this.emitEnterEvent();
+            return 
           })
           .catch(err => {
             this.close();
@@ -558,6 +561,7 @@ export class NgSelectComponent
           });
       } else if (tag) {
         this.select(this.itemsList.addItem(tag));
+        if(fromEnter) this.emitEnterEvent();
       } else {
         this.close();
       }
@@ -663,6 +667,12 @@ export class NgSelectComponent
     }
   }
 
+  emitEnterEvent(send?: boolean) {
+      if (this.closeOnSelect || send) {
+          console.log("ENTERED")
+          this.enterEvent.emit();
+      }
+  }
   private _setItems(items: any[]) {
     this.showMessage(`Set items:`, items);
     const firstItem = items[0];
@@ -903,17 +913,15 @@ export class NgSelectComponent
         ) {
           this.close();
         }
-        this.enterEvent.emit();
         this.toggleItem(this.itemsList.markedItem);
+        this.emitEnterEvent();
       } else if (this.addTag && this.addItem) {
-        this.enterEvent.emit();
-        this.selectTag();
+          this.selectTag(true);
       } else {
-        this.enterEvent.emit();
-        this.selectTag(true);
+          this.selectTag(true);
       }
     } else if (this.itemsList.maxItemsSelected) {
-      this.enterEvent.emit();
+      this.emitEnterEvent();
       this.filterInput.nativeElement.blur();
     } else {
       this.showDropdownPanel = true;
