@@ -104,7 +104,7 @@ export class NgSelectComponent
   @Input() clearable = true;
   @Input() markFirst = false;
   @Input() loading = false;
-  @Input() closeOnSelect = false;
+  @Input() closeOnSelect = true;
   @Input() hideSelected = false;
   @Input() selectOnTab = false;
   @Input() bufferAmount = 4;
