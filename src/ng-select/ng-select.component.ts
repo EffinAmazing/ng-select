@@ -438,9 +438,6 @@ export class NgSelectComponent
     this.showMessage(`Dropdown: close`);
 
     if (outsideClick) {
-      // if (this.multiple && this.filterValue) {
-      //     this.selectTag(true);
-      // }
       this.selectTag(false, true);
     }
 
@@ -524,26 +521,28 @@ export class NgSelectComponent
     let tag;
     if (!this.filterValue || !this.showDropdownPanel) {
       this.close();
-      if(fromEnter) this.emitEnterEvent(true);
+      if (fromEnter) this.emitEnterEvent(true);
       this.closedOnEnterEvent.emit(true);
       return;
     }
-
     if (this.itemsList.isDuplicateItem(this.filterValue)) {
       this.select(this.itemsList.getDuplicateItem(this.filterValue));
+      if (fromEnter) this.emitEnterEvent();
       return;
     }
 
-    if(fromClose) {
-        this.select(this.itemsList.addItem(this.filterValue, false), true);
-        return false;
+    if (fromClose) {
+      this.select(this.itemsList.addItem(this.filterValue, false), true);
+      if (fromEnter) this.emitEnterEvent();
+      return false;
     }
 
     if (!this.readOnly) {
-        if(!(this.addTag && this.addItem)) {
-            this.select(this.itemsList.addItem(this.filterValue, false), true);
-            return
-        }
+      if (!(this.addTag && this.addItem)) {
+        this.select(this.itemsList.addItem(this.filterValue, false), true);
+        if (fromEnter) this.emitEnterEvent();
+        return;
+      }
       if (isFunction(this.addTag)) {
         tag = (<AddTagFn>this.addTag)(this.filterValue);
       } else {
@@ -556,8 +555,8 @@ export class NgSelectComponent
         tag
           .then(item => {
             this.select(this.itemsList.addItem(item));
-            if(fromEnter) this.emitEnterEvent();
-            return 
+            if (fromEnter) this.emitEnterEvent();
+            return;
           })
           .catch(err => {
             this.close();
@@ -565,12 +564,12 @@ export class NgSelectComponent
           });
       } else if (tag) {
         this.select(this.itemsList.addItem(tag));
-        if(fromEnter) this.emitEnterEvent();
+        if (fromEnter) this.emitEnterEvent();
       } else {
         this.close();
       }
     } else {
-        this.close();
+      this.close();
     }
   }
 
@@ -672,9 +671,10 @@ export class NgSelectComponent
   }
 
   emitEnterEvent(send?: boolean) {
-      if (this.closeOnSelect || send) {
-          this.enterEvent.emit();
-      }
+    if (this.closeOnSelect || send) {
+      console.log('ENTERED');
+      this.enterEvent.emit();
+    }
   }
   private _setItems(items: any[]) {
     this.showMessage(`Set items:`, items);
@@ -919,9 +919,9 @@ export class NgSelectComponent
         this.toggleItem(this.itemsList.markedItem);
         this.emitEnterEvent();
       } else if (this.addTag && this.addItem) {
-          this.selectTag(true);
+        this.selectTag(true);
       } else {
-          this.selectTag(true);
+        this.selectTag(true);
       }
     } else if (this.itemsList.maxItemsSelected) {
       this.emitEnterEvent();
