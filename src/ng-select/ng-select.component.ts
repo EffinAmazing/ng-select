@@ -672,7 +672,6 @@ export class NgSelectComponent
 
   emitEnterEvent(send?: boolean) {
     if (this.closeOnSelect || send) {
-      console.log('ENTERED');
       this.enterEvent.emit();
     }
   }
