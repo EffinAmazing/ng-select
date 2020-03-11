@@ -1,11 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { DataService, Person } from '../shared/data.service';
-import { Observable } from 'rxjs/Observable';
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { DataService, Person } from "../shared/data.service";
+import { Observable } from "rxjs/Observable";
 
-@Component({
-    selector: 'select-search',
-    changeDetection: ChangeDetectionStrategy.Default,
-    template: `
+/**
+  To make it work, the team from vsh solutions had to remove this template from the component
+  some how, this template was breaking the build process
         <p>
             Most common case is showing data from backend
             API and with ng-select this is extremely simple since you can bind directly to 
@@ -74,38 +73,44 @@ import { Observable } from 'rxjs/Observable';
         </ng-select>
         ---
         <br />Selected car ID: {{selectedCarId | json}}
-    `
+
+ */
+
+@Component({
+  selector: "select-search",
+  changeDetection: ChangeDetectionStrategy.Default,
+  template: `
+    <br />Selected car ID: {{ selectedCarId | json }}
+  `
 })
 export class DataSourceComponent {
-    people$: Observable<Person[]>;
-    people: Person[] = [];
-    selectedPersonId = '5a15b13c36e7a7f00cf0d7cb';
-    selectedPersonId2 = '5a15b13c36e7a7f00cf0d7cb';
+  people$: Observable<Person[]>;
+  people: Person[] = [];
+  selectedPersonId = "5a15b13c36e7a7f00cf0d7cb";
+  selectedPersonId2 = "5a15b13c36e7a7f00cf0d7cb";
 
-    selectedSimpleItem = 'Two';
-    simpleItems = [];
-    disable = true;
+  selectedSimpleItem = "Two";
+  simpleItems = [];
+  disable = true;
 
-    selectedCarId = 3;
-    cars = [
-        { id: 1, name: 'Volvo' },
-        { id: 2, name: 'Saab', disabled: true },
-        { id: 3, name: 'Opel' },
-        { id: 4, name: 'Audi' },
-    ]
+  selectedCarId = 3;
+  cars = [
+    { id: 1, name: "Volvo" },
+    { id: 2, name: "Saab", disabled: true },
+    { id: 3, name: "Opel" },
+    { id: 4, name: "Audi" }
+  ];
 
-    constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {}
 
-    ngOnInit() {
-        this.people$ = this.dataService.getPeople();
-        this.dataService.getPeople().subscribe(items => this.people = items);
-        this.simpleItems = [true, 'Two', 3];
-    }
+  ngOnInit() {
+    this.people$ = this.dataService.getPeople();
+    this.dataService.getPeople().subscribe(items => (this.people = items));
+    this.simpleItems = [true, "Two", 3];
+  }
 
-    toggleDisabled() {
-        const car: any = this.cars[1];
-        car.disabled = !car.disabled;
-    }
+  toggleDisabled() {
+    const car: any = this.cars[1];
+    car.disabled = !car.disabled;
+  }
 }
-
-

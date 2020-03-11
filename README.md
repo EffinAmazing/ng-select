@@ -1,7 +1,9 @@
 # Steps to Build the application
-`npm run build
+`
+ yarn install
+ yarn start
+ yarn build
  cd dist
- npm publish --access public
  npm login
  npm publish --access public`
 # Contact to concerned person for credentials

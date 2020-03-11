@@ -1,6 +1,6 @@
 {
   "$schema": "../node_modules/ng-packagr/package.schema.json",
-  "name": "@vshsolutions/ng-select",
+  "name": "@utm-io/ng-select",
   "version": "1.9.9",
   "description": "Angular ng-select - All in One UI Select, Multiselect and Autocomplete",
   "author": "@ng-select/ng-select",
