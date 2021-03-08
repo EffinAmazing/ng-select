@@ -35,6 +35,7 @@
                    (keyup)="searchEvent.emit($event.target.value)"
                    (change)="$event.stopPropagation()"
                    role="combobox"
+                   [ngClass]="data-hj-allow"
                    [attr.aria-expanded]="isOpen"
                    [attr.aria-owns]="isOpen ? dropdownId : null"
                    [attr.aria-activedescendant]="isOpen ? itemsList?.markedItem?.htmlId : null">
